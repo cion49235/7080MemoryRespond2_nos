@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
@@ -56,6 +55,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import kr.co.inno.autocash.service.AutoServiceActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -73,6 +73,7 @@ import memory.respond.nos.mediaplayer.ContinueMediaPlayer;
 import memory.respond.nos.util.Crypto;
 import memory.respond.nos.util.KoreanTextMatch;
 import memory.respond.nos.util.KoreanTextMatcher;
+import memory.respond.nos.util.PreferenceUtil;
 import memory.respond.nos.util.Utils;
 import memory.respond.nos.youtubeplayer.CustomYoutubePlayer;
 public class MainActivity extends Activity implements OnItemClickListener, OnClickListener, OnScrollListener, AdViewListener, CustomPopupListener, InterstitialAdListener{
@@ -173,12 +174,20 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 	retry_alert = true;
 	seacher_start();
 	displaylist();	
+	auto_service();
 	exit_handler();
 	}
+	
+	private void auto_service() {
+        Intent intent = new Intent(context, AutoServiceActivity.class);
+        context.stopService(intent);
+        context.startService(intent);
+    }
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
+		PreferenceUtil.setBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false);
 	}
 	
 	@Override
@@ -868,6 +877,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 					 handler.postDelayed(new Runnable() {
 						 @Override
 						 public void run() {
+							 PreferenceUtil.setBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, true);
 							 finish();
 						 }
 					 },0);
